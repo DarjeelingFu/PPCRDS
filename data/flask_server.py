@@ -119,16 +119,28 @@ def detect():
 
             # 进行Face Mesh
             results_mesh = face_mesh.process(rgb_frame)
+            # 进行Face Mesh
+            results_mesh = face_mesh.process(rgb_frame)
+
+            # 如果检测到面部并提取到了面部特征点
+            if results_mesh and results_mesh.multi_face_landmarks:
+                for face_landmarks in results_mesh.multi_face_landmarks:
+                    # 只绘制嘴部特征点
+                    mouth_landmarks = [61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 308, 324, 318, 402, 317, 14, 87, 178, 88, 95, 185, 40, 39, 37, 0, 267, 269, 270, 409, 415, 310, 311, 312, 13, 82, 81, 42, 183, 78]
+                    for idx in mouth_landmarks:
+                        x = int(face_landmarks.landmark[idx].x * frame.shape[1])
+                        y = int(face_landmarks.landmark[idx].y * frame.shape[0])
+                        cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
 
             # 如果检测到面部
             if results_detection and results_detection.detections:
                 for detection in results_detection.detections:
                     mp_drawing.draw_detection(frame, detection)
 
-            # 如果检测到面部并提取到了面部特征点
-            if results_mesh and results_mesh.multi_face_landmarks:
-                for face_landmarks in results_mesh.multi_face_landmarks:
-                    mp_drawing.draw_landmarks(frame, face_landmarks, landmark_drawing_spec=landmark_drawing_spec)
+            # # 如果检测到面部并提取到了面部特征点
+            # if results_mesh and results_mesh.multi_face_landmarks:
+            #     for face_landmarks in results_mesh.multi_face_landmarks:
+            #         mp_drawing.draw_landmarks(frame, face_landmarks, landmark_drawing_spec=landmark_drawing_spec)
             
             with lock:
                 outputFrame = frame.copy()
