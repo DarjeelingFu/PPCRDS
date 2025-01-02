@@ -128,8 +128,9 @@ onMounted(() => {
       <span>姓名：<span>ABC</span></span>
       <span>年龄：<span>25</span></span>
       <span>实验编号：<span>1123312331</span></span>
-      <span>实验时间：<span>2024.12.25</span></span>
+      <span>实验时间：<span>2024.12.25</span></span> 
     </div>
+    <div class="subjectInfoBorder"></div>
     <div id="status">
       <img v-if="dataSource === 'random'" src="./assets/random_data.svg" @click="dataSource = 'websocket'"/>
       <img v-if="dataSource === 'websocket'" src="./assets/receiving_data.svg" @click="dataSource = 'random'"/>
@@ -223,6 +224,7 @@ onMounted(() => {
   height: 30px;
   margin: 0 20px;
   width: calc(100% - 40px);
+  position: relative;
 }
 
 /* h40px */
@@ -230,15 +232,29 @@ onMounted(() => {
   color: white;
   font-size: 18px;
   padding: 0 10px;
+  margin-left: 30px;
   height: 100%;
   width: 50%;
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
+  /* border: 1px solid aquamarine;
+  border-bottom: none;
+  box-sizing: border-box; */
+}
+
+.subjectInfoBorder {
+  position: absolute;
+  height: 100%;
+  width: calc(60% + 20px);
+
   border: 1px solid aquamarine;
   border-bottom: none;
   box-sizing: border-box;
+
+  transform: perspective(500px) rotateX(30deg) translate(0.9%, 0) scale(1, 1.2);
 }
 
 #status {
@@ -255,7 +271,6 @@ onMounted(() => {
   width: 16px;
   margin: 0 5px;
 }
-
 
 #main {
   position: relative;
