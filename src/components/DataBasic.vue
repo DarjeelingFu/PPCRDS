@@ -42,26 +42,22 @@ const optionHR = computed(() => ({
       symbol: 'path://M50 85 L90 15 L10 15 Z',
       silent: false,
       itemStyle: {
-        normal: {
-          color: 'rgba(255,0,0,1.0)',
-          borderColor: '#000',
-          borderWidth: 1
-        }
+        color: 'rgba(255,0,0,1.0)',
+        borderColor: '#000',
+        borderWidth: 1
       },
       symbolSize: [10, 20],
       symbolOffset: ['0%', '0%'],
       z: 20,
       data: [store.heartRate],
       label: {
-        normal: {
-          show: true,
-          formatter: function (param) {
-            return param.data + ' bpm';
-          },
-          position: 'top',
-          color: '#ffffff', // Change label color to white
-          fontSize: 14 // Increase font size
-        }
+        show: true,
+        formatter: function (param) {
+          return param.data + ' bpm';
+        },
+        position: 'top',
+        color: '#ffffff', // Change label color to white
+        fontSize: 14 // Increase font size
       },
     },
     {
@@ -70,13 +66,11 @@ const optionHR = computed(() => ({
       animation: false,
       barWidth: 8,
       itemStyle: {
-        normal: {
-          color: new graphic.LinearGradient(0, 0, 1, 0, [
-            { offset: 0, color: '#00c0ff' },
-            { offset: 0.5, color: '#5af98d' },
-            { offset: 1, color: '#f07d2e' }
-          ])
-        }
+        color: new graphic.LinearGradient(0, 0, 1, 0, [
+          { offset: 0, color: '#00c0ff' },
+          { offset: 0.5, color: '#5af98d' },
+          { offset: 1, color: '#f07d2e' }
+        ])
       },
       stack: 'total',
       data: [180]
@@ -112,27 +106,22 @@ const optionBR = computed(() => ({
       symbol: 'path://M50 85 L90 15 L10 15 Z',
       silent: false,
       itemStyle: {
-        normal: {
-          color: 'rgba(255,0,0,1.0)',
-          borderColor: '#000',
-          borderWidth: 1
-        }
+        color: 'rgba(255,0,0,1.0)',
+        borderColor: '#000',
+        borderWidth: 1
       },
       symbolSize: [10, 20],
       symbolOffset: ['0%', '0%'],
       z: 20,
       data: [store.respiration],
       label: {
-        normal: {
-          show: true,
-          formatter: function (param) {
-            return param.data + ' 次/分';
-          },
-          position: 'top',
-          color: '#ffffff', // Change label color to white
-          fontSize: 14 // Increase font size
-
-        }
+        show: true,
+        formatter: function (param) {
+          return param.data + ' 次/分';
+        },
+        position: 'top',
+        color: '#ffffff', // Change label color to white
+        fontSize: 14 // Increase font size
       },
     },
     {
@@ -141,13 +130,11 @@ const optionBR = computed(() => ({
       animation: false,
       barWidth: 8,
       itemStyle: {
-        normal: {
-          color: new graphic.LinearGradient(0, 0, 1, 0, [
-            { offset: 0, color: '#00c0ff' },
-            { offset: 0.5, color: '#5af98d' },
-            { offset: 1, color: '#f07d2e' }
-          ])
-        }
+        color: new graphic.LinearGradient(0, 0, 1, 0, [
+          { offset: 0, color: '#00c0ff' },
+          { offset: 0.5, color: '#5af98d' },
+          { offset: 1, color: '#f07d2e' }
+        ])
       },
       stack: 'total',
       data: [36]
@@ -183,26 +170,22 @@ const optionEN = computed(() => ({
       symbol: 'path://M50 85 L90 15 L10 15 Z',
       silent: false,
       itemStyle: {
-        normal: {
-          color: 'rgba(255,0,0,1.0)',
-          borderColor: '#000',
-          borderWidth: 1,
-        }
+        color: 'rgba(255,0,0,1.0)',
+        borderColor: '#000',
+        borderWidth: 1,
       },
       symbolSize: [10, 20],
       symbolOffset: ['0%', '0%'],
       z: 20,
       data: [store.leftEnergy],
       label: {
-        normal: {
-          show: true,
-          formatter: function (param) {
-            return (param.value * 100).toFixed(0) + '%';
-          },
-          position: 'top',
-          color: '#ffffff', // Change label color to white
-          fontSize: 14 // Increase font size
-        }
+        show: true,
+        formatter: function (param) {
+          return (param.value * 100).toFixed(0) + '%';
+        },
+        position: 'top',
+        color: '#ffffff', // Change label color to white
+        fontSize: 14 // Increase font size
       },
     },
     {
@@ -211,13 +194,11 @@ const optionEN = computed(() => ({
       animation: false,
       barWidth: 8,
       itemStyle: {
-        normal: {
-          color: new graphic.LinearGradient(0, 0, 1, 0, [
-            { offset: 0, color: '#00c0ff' },
-            { offset: 0.5, color: '#5af98d' },
-            { offset: 1, color: '#f07d2e' }
-          ])
-        }
+        color: new graphic.LinearGradient(0, 0, 1, 0, [
+          { offset: 0, color: '#00c0ff' },
+          { offset: 0.5, color: '#5af98d' },
+          { offset: 1, color: '#f07d2e' }
+        ])
       },
       stack: 'total',
       data: [36]
