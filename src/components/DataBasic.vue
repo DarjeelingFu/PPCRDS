@@ -17,7 +17,7 @@ const store = useStore()
 const optionHR = computed(() => ({
   yAxis: {
     show: false,
-    boundaryGap: false,
+    boundaryGap: 0,
     data: [
       'A'
     ]
@@ -25,7 +25,7 @@ const optionHR = computed(() => ({
   xAxis: {
     interval: 60,
     type: 'value',
-    boundaryGap: true,
+    // boundaryGap: true,
     max: 180,
     splitLine: {
       show: false
@@ -87,7 +87,7 @@ const optionHR = computed(() => ({
 const optionBR = computed(() => ({
   yAxis: {
     show: false,
-    boundaryGap: false,
+    boundaryGap: 0,
     data: [
       'A'
     ]
@@ -95,7 +95,6 @@ const optionBR = computed(() => ({
   xAxis: {
     interval: 12,
     type: 'value',
-    boundaryGap: true,
     max: 36,
     splitLine: {
       show: false
@@ -158,7 +157,7 @@ const optionBR = computed(() => ({
 const optionEN = computed(() => ({
   yAxis: {
     show: false,
-    boundaryGap: false,
+    boundaryGap: 0,
     data: [
       'A'
     ]
@@ -166,7 +165,6 @@ const optionEN = computed(() => ({
   xAxis: {
     interval: 0.5,
     type: 'value',
-    boundaryGap: true,
     max: 1,
     splitLine: {
       show: false
