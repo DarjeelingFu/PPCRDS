@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins='*')
 CORS(app, supports_credentials=True)
-disconnected = False
+disconnected = True
 
 mp_face_detection = mp.solutions.face_detection
 mp_drawing = mp.solutions.drawing_utils
@@ -28,12 +28,14 @@ vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
 def send_data():
+    global disconnected
     inlet = create_inlets()
-    while True and not disconnected:
-        sample, _ = inlet.pull_sample()
-        json_data = parse_data(sample)
-        socketio.emit("data", json_data)
-        print(f"Data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    while True:
+        if not disconnected:
+            sample, _ = inlet.pull_sample()
+            json_data = parse_data(sample)
+            socketio.emit("data", json_data)
+            print(f"Data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
         socketio.sleep(3)
 
 @app.route("/")
@@ -45,7 +47,6 @@ def connect():
     global disconnected
     disconnected = False
     print("Client connected")
-    socketio.start_background_task(send_data)
 
 @socketio.on("disconnect")
 def disconnect():
@@ -179,8 +180,9 @@ def generate():
             bytearray(encodedImage) + b'\r\n')
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=8000)
     t = threading.Thread(target=detect)
     t.daemon = True
     t.start()
+    socketio.start_background_task(send_data)
+    socketio.run(app, host='0.0.0.0', port=8000)
     vs.stop()

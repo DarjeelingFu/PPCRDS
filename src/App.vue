@@ -53,7 +53,7 @@ function connectWebSocket(host, port) {
   if (socket != null) {
     socket.close()
   }
-
+  console.log('Connecting to WebSocket server:', host, port)
   socket = io('http://' + host + ':' + port, {
     reconnection: false
   })
