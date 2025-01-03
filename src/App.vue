@@ -65,7 +65,6 @@ function connectWebSocket(host, port) {
 
   socket.on('data', (msg) => {
     const data = JSON.parse(msg)
-    console.log(data)
     dispatch_data(data)
   })
 

@@ -16,7 +16,7 @@ lock = threading.Lock()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
 CORS(app, supports_credentials=True)
 disconnected = True
 
