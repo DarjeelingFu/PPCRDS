@@ -1,23 +1,31 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue'
+import { useStore } from '../stores'
 
+const store = useStore()
 const logs = ref([])
 function addLog(content) {
   logs.value.push({
     time: new Date().toLocaleTimeString(),
     content: content
-  });
+  })
 
   if (logs.value.length > 10) {
-    logs.value.shift();
+    logs.value.shift()
   }
 }
 
 onMounted(() => {
-  setInterval(() => {
-    addLog('通过xx模态检测到xx情绪');
-  }, 3000);
-});
+  // setInterval(() => {
+  //   addLog('通过xx模态检测到xx情绪')
+  // }, 3000)
+})
+
+watch(store.emotion, (newVal, oldVal) => {
+  console.log(newVal)
+  addLog('通过xx模态检测到xx情绪')
+})
+
 </script>
 
 <template>

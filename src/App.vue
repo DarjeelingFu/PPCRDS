@@ -19,6 +19,7 @@ const wsConfig = ref({
   host: '127.0.0.1',
   port: '8000'
 })
+let socket = null
 
 function dispatch_data(data) {
   if (dataSource.value !== 'websocket') return
@@ -49,7 +50,14 @@ function dispatch_data(data) {
 }
 
 function connectWebSocket(host, port) {
-  const socket = io('http://' + host + ':' + port)
+  if (socket != null) {
+    socket.close()
+  }
+
+  socket = io('http://' + host + ':' + port, {
+    reconnection: false
+  })
+
   socket.on('connect', () => {
     console.log('WebSocket connection established')
     connectionState.value = true
@@ -63,6 +71,11 @@ function connectWebSocket(host, port) {
 
   socket.on('disconnect', () => {
     console.log('WebSocket connection closed')
+    connectionState.value = false
+  })
+
+  socket.on('error', (err) => {
+    console.log('WebSocket connection error:', err)
     connectionState.value = false
   })
 }
@@ -103,8 +116,8 @@ function generateFakeDate(store) {
 
   // Emotion
   let emotion = Array.from({ length: 5 }, () => Math.random());
-  const sum = emotion.reduce((acc, val) => acc + val, 0);
-  store.emotion = emotion.map(val => val / sum);
+  let maxEl = Math.max(...emotion)
+  store.emotion = emotion.map(val => val / maxEl);
 }
 
 onMounted(() => {

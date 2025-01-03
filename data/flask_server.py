@@ -18,6 +18,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins='*')
 CORS(app, supports_credentials=True)
+disconnected = False
 
 mp_face_detection = mp.solutions.face_detection
 mp_drawing = mp.solutions.drawing_utils
@@ -26,28 +27,32 @@ mp_face_mesh = mp.solutions.face_mesh
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
+def send_data():
+    inlet = create_inlets()
+    while True and not disconnected:
+        sample, _ = inlet.pull_sample()
+        json_data = parse_data(sample)
+        socketio.emit("data", json_data)
+        print(f"Data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        socketio.sleep(3)
+
 @app.route("/")
 def index():
     return 'hello'
 
 @socketio.on("connect")
 def connect():
+    global disconnected
+    disconnected = False
     print("Client connected")
-
-    def send_data(request):
-        inlet = create_inlets()
-        while True:
-            sample, _ = inlet.pull_sample()
-            json_data = parse_data(sample)
-            socketio.emit("data", json_data)
-            print(f"Data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-            socketio.sleep(3)
-
-    socketio.start_background_task(send_data, request)
+    socketio.start_background_task(send_data)
 
 @socketio.on("disconnect")
 def disconnect():
+    global disconnected
+    disconnected = True
     print("Client disconnected")
+    
 
 @app.route("/video_feed")
 def video_feed():
@@ -111,6 +116,8 @@ def detect():
             # read the next frame from the video stream, resize it,
             # convert the frame to grayscale, and blur it
             frame = vs.read()
+            if frame is None:
+                continue
             frame = imutils.resize(frame, width=400)
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -172,8 +179,8 @@ def generate():
             bytearray(encodedImage) + b'\r\n')
 
 if __name__ == '__main__':
+    socketio.run(app, host='0.0.0.0', port=8000)
     t = threading.Thread(target=detect)
     t.daemon = True
     t.start()
-    socketio.run(app, host='0.0.0.0', port=8000)
     vs.stop()
