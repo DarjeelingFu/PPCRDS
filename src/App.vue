@@ -4,9 +4,9 @@ import DataWaves from './components/DataWaves.vue'
 import DataHR from './components/DataHR.vue'
 import DataCamera from './components/DataCamera.vue'
 import DataCognitive from './components/DataCognitive.vue'
-import DataLog from './components/DataLog.vue'
 import DataEmotionHistory from './components/DataEmotionHistory.vue'
 import DataEmotion from './components/DataEmotion.vue'
+import DataEEGTopography from './components/DataEEGTopography.vue'
 import { useStore } from './stores'
 import { onMounted, ref } from 'vue'
 import io from 'socket.io-client'
@@ -152,14 +152,14 @@ onMounted(() => {
   </div>
   <div id="main">
     <div id="left" class="block">
+      <div id="dataEEGTopography">
+        <DataEEGTopography></DataEEGTopography>
+      </div>
       <div id="dataBasic">
         <DataBasic></DataBasic>
       </div>
       <div id="dataWaves">
         <DataWaves></DataWaves>
-      </div>
-      <div id="dataHR">
-        <DataHR></DataHR>
       </div>
     </div>
     <div id="middle" class="block">
@@ -171,8 +171,8 @@ onMounted(() => {
       </div>
     </div>
     <div id="right" class="block">
-      <div id="dataLog">
-        <DataLog></DataLog>
+      <div id="dataHR">
+        <DataHR></DataHR>
       </div>
       <div id="dataEmotionHistory">
         <DataEmotionHistory></DataEmotionHistory>
@@ -315,10 +315,14 @@ onMounted(() => {
   width: 30%
 }
 
-#dataBasic,
-#dataWaves {
+#dataEEGTopography,
+#dataBasic {
   border-bottom: 1px solid aquamarine;
   box-sizing: border-box;
+}
+
+#dataEEGTopography {
+  height: 33%;
 }
 
 #dataBasic {
@@ -326,10 +330,6 @@ onMounted(() => {
 }
 
 #dataWaves {
-  height: 33%;
-}
-
-#dataHR {
   height: 34%;
 }
 
@@ -343,13 +343,13 @@ onMounted(() => {
   height: 34%;
 }
 
-#dataLog,
+#dataHR,
 #dataEmotionHistory {
   border-bottom: 1px solid aquamarine;
   box-sizing: border-box;
 }
 
-#dataLog {
+#dataHR {
   height: 33%;
 }
 

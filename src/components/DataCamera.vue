@@ -27,9 +27,14 @@
   border-radius: 5px;
   margin: 5px;
   padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #camera {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
