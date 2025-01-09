@@ -31,6 +31,9 @@ export const useStore = defineStore('main', {
     emotionHistory: [],
 
     // Emotion
-    emotion: []
+    emotion: [],
+
+    // EEG topography
+    topography: [],
   })
 })

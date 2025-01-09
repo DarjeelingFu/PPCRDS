@@ -3,13 +3,18 @@ import { onMounted, ref, watch } from 'vue'
 import { useStore } from '../stores'
 
 const store = useStore()
+const canvasRef = ref(null)
+
+const drawTopography = (topography) => {
+  
+}
 
 </script>
 
 <template>
   <div id="container">
     <div id="panel">
-      <span id="areaTitle">脑电地形图</span>
+      <!-- <span id="areaTitle">脑电地形图</span>
       <div class="rowFlex">
         <div id="topographyA" class="topography">A</div>
         <div id="topographyB" class="topography">B</div>
@@ -17,7 +22,8 @@ const store = useStore()
       <div class="rowFlex">
         <div id="topographyC" class="topography">C</div>
         <div id="topographyD" class="topography">D</div>
-      </div>
+      </div> -->
+      <canvas id="canvasTopography" ref="canvasRef"></canvas>
     </div>
   </div>
 </template>
@@ -65,6 +71,11 @@ const store = useStore()
   color: white;
   font-size: 24px;
   font-weight: bold;
+}
+
+#canvasTopography {
+  width: 100%;
+  height: 100%;
 }
 
 </style>

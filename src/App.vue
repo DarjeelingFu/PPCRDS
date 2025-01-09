@@ -37,16 +37,15 @@ function dispatch_data(data) {
   if (data.hasOwnProperty('corrdinates')) { store.corrdinates = data.corrdinates }
   if (data.hasOwnProperty('cognitiveLoad')) { store.cognitiveLoad = data.cognitiveLoad }
   if (data.hasOwnProperty('vigilance')) { store.vigilance = data.vigilance }
-  if (data.hasOwnProperty('emotion')) { store.emotion = data.emotion }
+  if (data.hasOwnProperty('emotion')) { 
+    let maxEl = Math.max(...data.emotion)
+    store.emotion = data.emotion.map(val => val / maxEl);
+  }
   if (data.hasOwnProperty('emotionHistory')) {
-    store.emotionHistory = data.emotionHistory.reduce((acc, val, idx) => {
-      const colIdx = idx % 5
-      if (!acc[colIdx]) acc[colIdx] = []
-      acc[colIdx].push(val)
-      return acc
-    }, []);
+    store.emotionHistory = data.emotionHistory[0].map((_, colIndex) => data.emotionHistory.map(row => row[colIndex]))
   }
   if (data.hasOwnProperty('video')) { store.videoBuffer = data.video }
+  if (data.hasOwnProperty('topography')) { store.topography = data.topography }
 }
 
 function connectWebSocket(host, port) {
@@ -64,6 +63,7 @@ function connectWebSocket(host, port) {
   })
 
   socket.on('data', (msg) => {
+    console.log(msg)
     const data = JSON.parse(msg)
     dispatch_data(data)
   })
@@ -117,6 +117,9 @@ function generateFakeDate(store) {
   let emotion = Array.from({ length: 5 }, () => Math.random());
   let maxEl = Math.max(...emotion)
   store.emotion = emotion.map(val => val / maxEl);
+
+  // Topography
+  store.topography = Array.from({ length: 500 }, () => Array.from({ length: 1500 }, () => [Math.random() * 255, Math.random() * 255, Math.random() * 255]));
 }
 
 onMounted(() => {
