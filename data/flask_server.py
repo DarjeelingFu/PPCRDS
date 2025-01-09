@@ -1,7 +1,7 @@
 from flask import Flask, request, Response
 from flask_socketio import SocketIO
 from flask_cors import *
-from receive import create_inlets
+from receive import create_inlets_ECG, create_inlets_EEG
 import json
 import numpy as np
 import time
@@ -27,26 +27,40 @@ mp_face_mesh = mp.solutions.face_mesh
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
-def send_data():
-    global disconnected
-    inlet = create_inlets()
-    while True:
-        if not disconnected:
-            sample, _ = inlet.pull_sample()
-            json_data = parse_data(sample)
-            socketio.emit("data", json_data)
-            print(f"Data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-        socketio.sleep(3)
+emotion_queue = []
+
+others_stream = {
+    "heartRate": 1,
+    "respiration": 1,
+    "leftEnergy": 1,
+    "ECG": 3000,
+    "RESP": 3000,
+    "EDA": 3000,
+    "PULSE": 3000,
+    "mean": 1,
+    "variance": 1,
+    "value": 1,
+    "corrdinates": 120,
+}
+
+EEG_stream = {
+    "emotion": 5,
+    "topography": 100 * 300 * 3,
+    "cognitiveLoad": 1,
+    "vigilance": 1,
+}
 
 @app.route("/")
 def index():
     return 'hello'
+
 
 @socketio.on("connect")
 def connect():
     global disconnected
     disconnected = False
     print("Client connected")
+
 
 @socketio.on("disconnect")
 def disconnect():
@@ -62,48 +76,97 @@ def video_feed():
     return Response(generate(),
         mimetype = "multipart/x-mixed-replace; boundary=frame")
 
-def parse_data(data):
-    field_length = {
-        "heartRate": 1,
-        "respiration": 1,
-        "leftEnergy": 1,
-        "ECG": 6000,
-        "RESP": 6000,
-        "EDA": 6000,
-        "PULSE": 6000,
-        "mean": 1,
-        "variance": 1,
-        "value": 1,
-        "corrdinates": 120,
-        "cognitiveLoad": 1,
-        "vigilance": 1,
-        "emotion": 5,
-        "emotionHistory": 150
-    }
 
+def send_EEG_data():
+    global disconnected
+    inlet = create_inlets_EEG()
+    while True:
+        if not disconnected:
+            sample, _ = inlet.pull_sample()
+            print(f'EEG data len: {len(sample)}')
+            json_data = parse_EEG_data(sample)
+            socketio.emit("data", json_data)
+            print(f"EEG data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        socketio.sleep(3)
+
+
+def send_other_data():
+    global disconnected
+    inlet = create_inlets_ECG()
+    while True:
+        if not disconnected:
+            sample, _ = inlet.pull_sample()
+            print(f'ECG data len: {len(sample)}')
+            json_data = parse_other_data(sample)
+            socketio.emit("data", json_data)
+            print(f"Other data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        socketio.sleep(3)
+
+
+def send_all_data():
+    global disconnected
+    inlet1 = create_inlets_ECG()
+    inlet2 = create_inlets_EEG()
+    while True:
+        if not disconnected:
+            sample_ECG, _ = inlet1.pull_sample()
+            sample_EEG, _ = inlet2.pull_sample()
+            json_data_ECG = parse_other_data(sample_ECG)
+            json_data_EEG = parse_EEG_data(sample_EEG)
+            socketio.emit("data", json_data_ECG)
+            socketio.emit("data", json_data_EEG)
+            print(f"All data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+
+def parse_other_data(data):
     json_data = {}
     offset = 0
 
-    for field in field_length:
-        length = field_length[field]
+    for field in others_stream:
+        length = others_stream[field]
 
         if field == 'corrdinates':
             field_data = data[offset:offset + length]
             json_data[field] = np.array(field_data).reshape(-1, 2).tolist()
-
-        elif field == 'emotion_history':
-            field_data = data[offset:offset + length]
-            json_data[field] = np.array(field_data).reshape(-1, 5).tolist()
-        
         elif length == 1:
             json_data[field] = data[offset]
-        
         else:
             json_data[field] = data[offset:offset + length]
         
         offset += length
         
     return json.dumps(json_data)
+
+
+def parse_EEG_data(data):
+    json_data = {}
+    offset = 0
+
+    for field in EEG_stream:
+        length = EEG_stream[field]
+
+        if field == 'emotion_history':
+            field_data = data[offset:offset + length]
+            json_data[field] = np.array(field_data).reshape(-1, 5).tolist()
+        elif field == 'topography':
+            field_data = data[offset:offset + length]
+            json_data[field] = np.array(field_data).reshape(100, 300, 3).tolist()
+        elif field == 'emotion':
+            emotion = data[offset:offset + length]
+            emotion_queue.append(emotion)
+            if len(emotion_queue) > 30:
+                emotion_queue.pop(0)
+            json_data[field] = emotion
+            json_data['emotionHistory'] = emotion_queue
+        elif length == 1:
+            json_data[field] = data[offset]
+        else:
+            json_data[field] = data[offset:offset + length]
+        
+        offset += length
+        
+    return json.dumps(json_data)
+
 
 def detect():
     global vs, outputFrame, lock
@@ -158,6 +221,7 @@ def detect():
             with lock:
                 outputFrame = frame.copy()
 
+
 def generate():
     # grab global references to the output frame and lock variables
     global outputFrame, lock
@@ -175,14 +239,16 @@ def generate():
             if not flag:
                 continue
         # yield the output frame in the byte format
-        print('yielding frame')
         yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
             bytearray(encodedImage) + b'\r\n')
+
 
 if __name__ == '__main__':
     t = threading.Thread(target=detect)
     t.daemon = True
     t.start()
-    socketio.start_background_task(send_data)
+    socketio.start_background_task(send_EEG_data)
+    socketio.start_background_task(send_other_data)
+    # socketio.start_background_task(send_all_data)
     socketio.run(app, host='0.0.0.0', port=8000)
     vs.stop()

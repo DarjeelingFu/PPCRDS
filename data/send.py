@@ -65,6 +65,7 @@ def send_data(outlets):
 
         # 打印发送的数据
         print("Data sent at: ", time.strftime('%Y-%m-%d %H:%M:%S'))
+        print(f"Data length {len(data)}")
         print(f"A (Heart rate, Respiration, Fitness): {data[0:2]}")
         print(f"B (ECG, Respiration Electro, Skin Conductance, Pulse): {data[3:12]}... (First 10 values)")
         print(f"C (Normal Dist Mean, Variance, Normal Value): {data[24003:24005]}")
