@@ -20,6 +20,9 @@ const wsConfig = ref({
   port: '8000'
 })
 let socket = null
+const cameraNormalIconSrc = '/src/assets/camera.svg'
+const cameraPressedIconSrc = '/src/assets/camera_pressed.svg'
+let cameraIcon = ref(cameraNormalIconSrc)
 
 function dispatch_data(data) {
   if (dataSource.value !== 'websocket') return
@@ -157,7 +160,7 @@ const refreshCamera = () => {
       <img v-if="dataSource === 'websocket'" src="./assets/receiving_data.svg" @click="dataSource = 'random'"/>
       <img v-if="connectionState === true" src="./assets/connection_established.svg" @click="dialogVisible = true"/>
       <img v-if="connectionState === false" src="./assets/connection_lost.svg" @click="dialogVisible = true"/>
-      <img src="./assets/camera.svg" @click="refreshCamera" />
+      <img :src="cameraIcon" @click="refreshCamera" @mousedown="cameraIcon = cameraPressedIconSrc" @mouseup="cameraIcon = cameraNormalIconSrc"  />
     </div>
   </div>
   <div id="main">
