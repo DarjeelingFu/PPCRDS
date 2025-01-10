@@ -35,5 +35,8 @@ export const useStore = defineStore('main', {
 
     // EEG topography
     topography: [],
+
+    // Camera Video Stream Url
+    videoSrc: 'http://127.0.0.1:8000/video_feed'
   })
 })

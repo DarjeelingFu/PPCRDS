@@ -60,6 +60,7 @@ function connectWebSocket(host, port) {
   socket.on('connect', () => {
     console.log('WebSocket connection established')
     connectionState.value = true
+    refreshCamera()
   })
 
   socket.on('data', (msg) => {
@@ -130,6 +131,11 @@ onMounted(() => {
     }
   }, 3000)
 })
+
+refreshCamera = () => {
+  store.videoSrc = 'http://127.0.0.1:8000/video_feed' + '?t=' + new Date().getTime()
+}
+
 </script>
 
 <template>
@@ -151,6 +157,7 @@ onMounted(() => {
       <img v-if="dataSource === 'websocket'" src="./assets/receiving_data.svg" @click="dataSource = 'random'"/>
       <img v-if="connectionState === true" src="./assets/connection_established.svg" @click="dialogVisible = true"/>
       <img v-if="connectionState === false" src="./assets/connection_lost.svg" @click="dialogVisible = true"/>
+      <img src="./assets/camera.svg" @click="refreshCamera" />
     </div>
   </div>
   <div id="main">

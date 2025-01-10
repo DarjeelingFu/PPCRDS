@@ -1,12 +1,14 @@
 <script setup>
+import { useStore } from './stores'
 
+const store = useStore()
 </script>
 
 <template>
   <div id="container">
     <div id="panel">
       <!-- <video id="camera" :src="url" autoplay></video> -->
-      <img src="http://127.0.0.1:8000/video_feed" id="camera">
+      <img :src="store.videoSrc" id="camera">
     </div>
   </div>
 </template>
