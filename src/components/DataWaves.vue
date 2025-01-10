@@ -67,7 +67,7 @@ const optionECG = computed(() => ({
     right: '5%',
     top: '5%',
     bottom: '20%',
-    containLabel: true
+    containLabel: true,
   }
 }))
 const optionRESP = computed(() => ({
@@ -86,6 +86,7 @@ const optionRESP = computed(() => ({
     },
     axisLine: {
       show: true,
+      position: 'bottom'
     },
     name: '呼吸',
     nameLocation: 'middle', // Position the title in the middle
@@ -145,6 +146,7 @@ const optionEDA = computed(() => ({
     },
     axisLine: {
       show: true,
+      position: 'bottom'
     },
     name: '皮电',
     nameLocation: 'middle', // Position the title in the middle

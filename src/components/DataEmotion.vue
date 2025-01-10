@@ -17,11 +17,11 @@ let option = computed(() => ({
     // shape: 'circle',
     center: ['50%', '57%'],
     indicator: [
-      { name: '高兴', max: 1 },
-      { name: '平静', max: 1 },
-      { name: '悲伤', max: 1 },
+      { name: '愤怒', max: 1 },
       { name: '厌恶', max: 1 },
       { name: '恐惧', max: 1 },
+      { name: '平静', max: 1 },
+      { name: '悲伤', max: 1 },
     ],
     splitLine: {
       lineStyle: {

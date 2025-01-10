@@ -11,6 +11,9 @@ import mediapipe as mp
 import threading
 from imutils.video import VideoStream
 import imutils
+from PIL import Image
+from io import BytesIO
+import base64
 
 outputFrame = None
 lock = threading.Lock()
@@ -30,6 +33,9 @@ time.sleep(2.0)
 
 emotion_queue = []
 
+topography_width = 500
+topography_height = 250
+
 others_stream = {
     "heartRate": 1,
     "respiration": 1,
@@ -46,7 +52,7 @@ others_stream = {
 
 EEG_stream = {
     "emotion": 5,
-    "topography": 100 * 300 * 3,
+    "topography": topography_height * topography_width * 3,
     "cognitiveLoad": 1,
     "vigilance": 1,
 }
@@ -84,7 +90,6 @@ def send_EEG_data():
     while True:
         if not disconnected:
             sample, _ = inlet.pull_sample()
-            print(f'EEG data len: {len(sample)}')
             json_data = parse_EEG_data(sample)
             socketio.emit("data", json_data)
             print(f"EEG data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -97,7 +102,6 @@ def send_other_data():
     while True:
         if not disconnected:
             sample, _ = inlet.pull_sample()
-            print(f'ECG data len: {len(sample)}')
             json_data = parse_other_data(sample)
             socketio.emit("data", json_data)
             print(f"Other data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -135,9 +139,8 @@ def parse_other_data(data):
             json_data[field] = data[offset:offset + length]
         
         offset += length
-    if json_data['respiration'] == np.nan:
+    if np.isnan(json_data['respiration']):
         json_data['respiration'] = 0
-    print(json_data['respiration'])
     return json.dumps(json_data)
 
 
@@ -153,7 +156,8 @@ def parse_EEG_data(data):
             json_data[field] = np.array(field_data).reshape(-1, 5).tolist()
         elif field == 'topography':
             field_data = data[offset:offset + length]
-            json_data[field] = np.array(field_data).reshape(100, 300, 3).tolist()
+            image_data = np.array(field_data).reshape(topography_height, topography_width, 3)
+            json_data['topographyJpeg'] = decode_pixel_array(image_data)
         elif field == 'emotion':
             emotion = data[offset:offset + length]
             emotion_queue.append(emotion)
@@ -169,6 +173,19 @@ def parse_EEG_data(data):
         offset += length
     
     return json.dumps(json_data)
+
+
+def decode_pixel_array(pixels):
+    # 将 numpy 数组转换为 PIL 图像
+    image = Image.fromarray(pixels.astype('uint8'))
+    
+    # 将图像保存到内存中的字节流
+    buffered = BytesIO()
+    image.save(buffered, format="JPEG")
+    
+    # 编码为 base64 字符串
+    encoded_string = base64.b64encode(buffered.getvalue()).decode('utf-8')
+    return encoded_string
 
 
 def detect():

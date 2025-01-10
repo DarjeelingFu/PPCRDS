@@ -3,15 +3,6 @@ import { onMounted, ref, watch } from 'vue'
 import { useStore } from '../stores'
 
 const store = useStore()
-const canvasRef = ref(null)
-
-const drawTopography = (topography) => {
-  console.log('try to draw topography')
-}
-
-watch(() => store.topography, (topography) => {
-  drawTopography(topography)
-})
 
 </script>
 
@@ -19,15 +10,7 @@ watch(() => store.topography, (topography) => {
   <div id="container">
     <div id="panel">
       <span id="areaTitle">脑电地形图</span>
-      <!-- <div class="rowFlex">
-        <div id="topographyA" class="topography">A</div>
-        <div id="topographyB" class="topography">B</div>
-      </div>
-      <div class="rowFlex">
-        <div id="topographyC" class="topography">C</div>
-        <div id="topographyD" class="topography">D</div>
-      </div> -->
-      <canvas id="canvasTopography" ref="canvasRef"></canvas>
+      <img id="imgTopography" :src="'data:image/jpeg;base64,' + store.topographyJpeg" />
     </div>
   </div>
 </template>
@@ -80,6 +63,11 @@ watch(() => store.topography, (topography) => {
 #canvasTopography {
   width: 100%;
   height: calc(100% - 30px);
+}
+
+#imgTopography {
+  width: 100%;
+  height: calc(100% - 30px)
 }
 
 </style>

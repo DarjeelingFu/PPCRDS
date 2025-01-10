@@ -53,7 +53,7 @@ const optionHR = computed(() => ({
       label: {
         show: true,
         formatter: function (param) {
-          return param.data + ' bpm';
+            return Math.floor(param.data) + ' bpm';
         },
         position: 'top',
         color: '#ffffff', // Change label color to white
@@ -117,7 +117,7 @@ const optionBR = computed(() => ({
       label: {
         show: true,
         formatter: function (param) {
-          return param.data + ' 次/分';
+          return Math.floor(param.data) + ' 次/分';
         },
         position: 'top',
         color: '#ffffff', // Change label color to white

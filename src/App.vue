@@ -30,10 +30,10 @@ function dispatch_data(data) {
   if (data.hasOwnProperty('heartRate')) { store.heartRate = data.heartRate }
   if (data.hasOwnProperty('respiration')) { store.respiration = data.respiration }
   if (data.hasOwnProperty('leftEnergy')) { store.leftEnergy = data.leftEnergy }
-  if (data.hasOwnProperty('ECG')) { store.ECG = data.ECG }
-  if (data.hasOwnProperty('RESP')) { store.RESP = data.RESP }
-  if (data.hasOwnProperty('EDA')) { store.EDA = data.EDA }
-  if (data.hasOwnProperty('PULSE')) { store.PULSE = data.PULSE }
+  if (data.hasOwnProperty('ECG')) { store.ECG = normalize(data.ECG) }
+  if (data.hasOwnProperty('RESP')) { store.RESP = normalize(data.RESP) }
+  if (data.hasOwnProperty('EDA')) { store.EDA = normalize(data.EDA) }
+  if (data.hasOwnProperty('PULSE')) { store.PULSE = normalize(data.PULSE) }
   if (data.hasOwnProperty('mean')) { store.mean = data.mean }
   if (data.hasOwnProperty('variance')) { store.variance = data.variance }
   if (data.hasOwnProperty('value')) { store.value = data.value }
@@ -42,13 +42,40 @@ function dispatch_data(data) {
   if (data.hasOwnProperty('vigilance')) { store.vigilance = data.vigilance }
   if (data.hasOwnProperty('emotion')) { 
     let maxEl = Math.max(...data.emotion)
-    store.emotion = data.emotion.map(val => val / maxEl);
+    store.emotion = data.emotion.map(val => val / maxEl)
+
+    let now = new Date().toLocaleString()
+    data.emotion.map((prob, index) => {
+      store.emotionHistoryWithTime[index].push({
+        name: now,
+        value: [now, prob]
+      })
+      if(store.emotionHistoryWithTime[index].length > 30) {
+        store.emotionHistoryWithTime[index].shift()
+      }
+    })
+
+    // store.emotionHistoryWithTime = store.emotionHistory.map((emotionCategory, index) => (
+    //   emotionCategory.map((emotionProb, index) => ({
+    //     name: new Date(now.getTime() - (29 - index) * 3000).toLocaleString(),
+    //     value: [new Date(now.getTime() - (29 - index) * 3000).toLocaleString(), emotionProb]
+    //   }))
+    // ))
+
   }
   if (data.hasOwnProperty('emotionHistory')) {
     store.emotionHistory = data.emotionHistory[0].map((_, colIndex) => data.emotionHistory.map(row => row[colIndex]))
   }
   if (data.hasOwnProperty('video')) { store.videoBuffer = data.video }
   if (data.hasOwnProperty('topography')) { store.topography = data.topography }
+  if (data.hasOwnProperty('topographyJpeg')) { store.topographyJpeg = data.topographyJpeg }
+}
+
+function normalize(data) {
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  // return data.map(value => (value - min) / (max - min));
+  return data.map(value => value - min);
 }
 
 function connectWebSocket(host, port) {
@@ -67,8 +94,8 @@ function connectWebSocket(host, port) {
   })
 
   socket.on('data', (msg) => {
-    console.log(msg)
     const data = JSON.parse(msg)
+    // console.log(data)
     dispatch_data(data)
   })
 
@@ -149,10 +176,10 @@ const refreshCamera = () => {
   </div>
   <div id="infoBar">
     <div id="subjectInfo">
-      <span>姓名：<span>ABC</span></span>
+      <span>姓名：<span>张三</span></span>
       <span>年龄：<span>25</span></span>
-      <span>实验编号：<span>1123312331</span></span>
-      <span>实验时间：<span>2024.12.25</span></span> 
+      <span>实验编号：<span>001</span></span>
+      <span>实验日期：<span>{{ new Date().toLocaleDateString() }}</span></span>
     </div>
     <div class="subjectInfoBorder"></div>
     <div id="status">
@@ -160,7 +187,9 @@ const refreshCamera = () => {
       <img v-if="dataSource === 'websocket'" src="./assets/receiving_data.svg" @click="dataSource = 'random'"/>
       <img v-if="connectionState === true" src="./assets/connection_established.svg" @click="dialogVisible = true"/>
       <img v-if="connectionState === false" src="./assets/connection_lost.svg" @click="dialogVisible = true"/>
-      <img :src="cameraIcon" @click="refreshCamera" @mousedown="cameraIcon = cameraPressedIconSrc" @mouseup="cameraIcon = cameraNormalIconSrc"  />
+      <img :src="cameraIcon" @click="refreshCamera" 
+        @mousedown="cameraIcon = cameraPressedIconSrc" @mouseup="cameraIcon = cameraNormalIconSrc" @mouseleave="cameraIcon = cameraNormalIconSrc"  
+      />
     </div>
   </div>
   <div id="main">

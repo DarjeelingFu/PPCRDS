@@ -9,7 +9,7 @@ import {
   GridComponent
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
-import { computed, provide } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import VChart, { THEME_KEY } from 'vue-echarts';
 import { graphic } from 'echarts';
 import { useStore } from '../stores';
@@ -40,7 +40,7 @@ const option = computed(() => ({
     }
   },
   legend: {
-    data: ['平静', '悲伤', '厌恶', '愤怒', '高兴'],
+    data: ['愤怒', '厌恶', '恐惧', '平静', '悲伤'],
     textStyle: {
       fontSize: 15
     },
@@ -55,9 +55,16 @@ const option = computed(() => ({
   },
   xAxis: [
     {
-      type: 'category',
+      type: 'time',
       boundaryGap: false,
-      data: Array.from({ length: 30 }, (_, i) => i - 29)
+      axisLabel: {
+        formatter: function (value) {
+          const date = new Date(value);
+          const minutes = date.getMinutes().toString().padStart(2, '0');
+          const seconds = date.getSeconds().toString().padStart(2, '0');
+          return `${minutes}:${seconds}`;
+        }
+      }
     }
   ],
   yAxis: [
@@ -74,7 +81,7 @@ const option = computed(() => ({
   ],
   series: [
     {
-      name: '平静',
+      name: '愤怒',
       type: 'line',
       stack: 'Total',
       smooth: true,
@@ -98,10 +105,10 @@ const option = computed(() => ({
       emphasis: {
         focus: 'series'
       },
-      data: store.emotionHistory[0]
+      data: store.emotionHistoryWithTime[0]
     },
     {
-      name: '悲伤',
+      name: '厌恶',
       type: 'line',
       stack: 'Total',
       smooth: true,
@@ -125,10 +132,10 @@ const option = computed(() => ({
       emphasis: {
         focus: 'series'
       },
-      data: store.emotionHistory[1]
+      data: store.emotionHistoryWithTime[1]
     },
     {
-      name: '厌恶',
+      name: '恐惧',
       type: 'line',
       stack: 'Total',
       smooth: true,
@@ -152,10 +159,10 @@ const option = computed(() => ({
       emphasis: {
         focus: 'series'
       },
-      data: store.emotionHistory[2]
+      data: store.emotionHistoryWithTime[2]
     },
     {
-      name: '愤怒',
+      name: '平静',
       type: 'line',
       stack: 'Total',
       smooth: true,
@@ -179,10 +186,10 @@ const option = computed(() => ({
       emphasis: {
         focus: 'series'
       },
-      data: store.emotionHistory[3]
+      data: store.emotionHistoryWithTime[3]
     },
     {
-      name: '高兴',
+      name: '悲伤',
       type: 'line',
       stack: 'Total',
       smooth: true,
@@ -210,7 +217,7 @@ const option = computed(() => ({
       emphasis: {
         focus: 'series'
       },
-      data: store.emotionHistory[4]
+      data: store.emotionHistoryWithTime[4]
     }
   ]
 }))
