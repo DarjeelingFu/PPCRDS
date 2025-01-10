@@ -132,7 +132,7 @@ onMounted(() => {
   }, 3000)
 })
 
-refreshCamera = () => {
+const refreshCamera = () => {
   store.videoSrc = 'http://127.0.0.1:8000/video_feed' + '?t=' + new Date().getTime()
 }
 
