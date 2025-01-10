@@ -4,6 +4,7 @@ from flask_cors import *
 from receive import create_inlets_ECG, create_inlets_EEG
 import json
 import numpy as np
+from numpy import nan
 import time
 import cv2
 import mediapipe as mp
@@ -134,7 +135,9 @@ def parse_other_data(data):
             json_data[field] = data[offset:offset + length]
         
         offset += length
-        
+    if json_data['respiration'] == np.nan:
+        json_data['respiration'] = 0
+    print(json_data['respiration'])
     return json.dumps(json_data)
 
 
@@ -164,7 +167,7 @@ def parse_EEG_data(data):
             json_data[field] = data[offset:offset + length]
         
         offset += length
-        
+    
     return json.dumps(json_data)
 
 
