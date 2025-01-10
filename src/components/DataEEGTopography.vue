@@ -6,16 +6,20 @@ const store = useStore()
 const canvasRef = ref(null)
 
 const drawTopography = (topography) => {
-  
+  console.log('try to draw topography')
 }
+
+watch(() => store.topography, (topography) => {
+  drawTopography(topography)
+})
 
 </script>
 
 <template>
   <div id="container">
     <div id="panel">
-      <!-- <span id="areaTitle">脑电地形图</span>
-      <div class="rowFlex">
+      <span id="areaTitle">脑电地形图</span>
+      <!-- <div class="rowFlex">
         <div id="topographyA" class="topography">A</div>
         <div id="topographyB" class="topography">B</div>
       </div>
@@ -75,7 +79,7 @@ const drawTopography = (topography) => {
 
 #canvasTopography {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 30px);
 }
 
 </style>
