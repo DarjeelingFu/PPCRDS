@@ -88,24 +88,29 @@ def send_EEG_data():
     global disconnected
     inlet = create_inlets_EEG()
     while True:
+        sample, _ = inlet.pull_sample()
+        print(f"EEG data received at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+
         if not disconnected:
-            sample, _ = inlet.pull_sample()
             json_data = parse_EEG_data(sample)
             socketio.emit("data", json_data)
             print(f"EEG data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-        socketio.sleep(3)
+        # socketio.sleep(3)
 
 
 def send_other_data():
     global disconnected
     inlet = create_inlets_ECG()
+
     while True:
+        sample, _ = inlet.pull_sample()
+        print(f"Other data received at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+
         if not disconnected:
-            sample, _ = inlet.pull_sample()
             json_data = parse_other_data(sample)
             socketio.emit("data", json_data)
             print(f"Other data sent at: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-        socketio.sleep(3)
+        # socketio.sleep(3)
 
 
 def send_all_data():
