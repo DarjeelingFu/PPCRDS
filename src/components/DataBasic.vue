@@ -87,9 +87,9 @@ const optionBR = computed(() => ({
     ]
   },
   xAxis: {
-    interval: 12,
+    interval: 15,
     type: 'value',
-    max: 36,
+    max: 45,
     splitLine: {
       show: false
     },
@@ -137,7 +137,7 @@ const optionBR = computed(() => ({
         ])
       },
       stack: 'total',
-      data: [36]
+      data: [45]
     },]
 }))
 

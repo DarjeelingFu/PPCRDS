@@ -10,6 +10,7 @@ const store = useStore()
   <div id="container">
     <div id="panel">
       <span id="areaTitle">脑电地形图</span>
+
       <img id="imgTopography" :src="'data:image/jpeg;base64,' + store.topographyJpeg" />
     </div>
   </div>
