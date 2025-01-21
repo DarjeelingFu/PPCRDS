@@ -1,7 +1,4 @@
-body {
+body, html {
     margin: 0;
     padding: 0;
-    background-color: #122946;
-    background-image: url('assets/bg.png');
-    background-size: cover;
 }
