@@ -29,8 +29,16 @@ export const useStore = defineStore('main', {
 
     // Emotion History
     emotionHistory: [],
+    emotionHistoryWithTime: [[], [], [], [], []],
 
     // Emotion
-    emotion: []
+    emotion: [],
+
+    // EEG topography
+    topography: [],
+    topographyJpeg: '',
+
+    // Camera Video Stream Url
+    videoSrc: 'http://127.0.0.1:8000/video_feed'
   })
 })

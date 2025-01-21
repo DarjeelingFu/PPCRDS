@@ -10,14 +10,8 @@ const store = useStore()
   <div id="container">
     <div id="panel">
       <span id="areaTitle">脑电地形图</span>
-      <div class="rowFlex">
-        <div id="topographyA" class="topography">A</div>
-        <div id="topographyB" class="topography">B</div>
-      </div>
-      <div class="rowFlex">
-        <div id="topographyC" class="topography">C</div>
-        <div id="topographyD" class="topography">D</div>
-      </div>
+
+      <img id="imgTopography" :src="'data:image/jpeg;base64,' + store.topographyJpeg" />
     </div>
   </div>
 </template>
@@ -65,6 +59,16 @@ const store = useStore()
   color: white;
   font-size: 24px;
   font-weight: bold;
+}
+
+#canvasTopography {
+  width: 100%;
+  height: calc(100% - 30px);
+}
+
+#imgTopography {
+  width: 100%;
+  height: calc(100% - 30px)
 }
 
 </style>

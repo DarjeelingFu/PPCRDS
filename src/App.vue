@@ -19,9 +19,6 @@ function handleKeyPress(event: KeyboardEvent) {
   }
 }
 
-onMounted(() => {
-  window.addEventListener('keydown', handleKeyPress)
-})
 </script>
 
 <template>

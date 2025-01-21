@@ -53,7 +53,7 @@ const optionHR = computed(() => ({
       label: {
         show: true,
         formatter: function (param) {
-          return param.data + ' bpm';
+            return Math.floor(param.data) + ' bpm';
         },
         position: 'top',
         color: '#ffffff', // Change label color to white
@@ -87,9 +87,9 @@ const optionBR = computed(() => ({
     ]
   },
   xAxis: {
-    interval: 12,
+    interval: 15,
     type: 'value',
-    max: 36,
+    max: 45,
     splitLine: {
       show: false
     },
@@ -117,7 +117,7 @@ const optionBR = computed(() => ({
       label: {
         show: true,
         formatter: function (param) {
-          return param.data + ' 次/分';
+          return Math.floor(param.data) + ' 次/分';
         },
         position: 'top',
         color: '#ffffff', // Change label color to white
@@ -137,7 +137,7 @@ const optionBR = computed(() => ({
         ])
       },
       stack: 'total',
-      data: [36]
+      data: [45]
     },]
 }))
 
